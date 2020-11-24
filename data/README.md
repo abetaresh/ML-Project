@@ -22,11 +22,11 @@ added up "baboon", "river".
 binary_key = ["landscape", "horse", "house", "baboon", "river", "sunny", "cloudy", "rainy"]
 binary_encoding = [1, 1, 0, 0, 1, 0]
 ```
-![photo1](https://github.com/abetaresh/ML-Project/edit/main/data/testing/27-27707.jpg)
+![photo1](https://raw.githubusercontent.com/abetaresh/ML-Project/main/data/testing/27-27707.jpg)
 
 ### Example 2:
 ```
 binary_key = ["landscape", "horse", "house", "baboon", "river", "sunny", "cloudy", "rainy"]
 binary_encoding = [1, 0, 1, 0, 0, 0, 1, 0, 0]
 ```
-![photo2](https://github.com/abetaresh/ML-Project/edit/main/data/testing/27-27708.jpg)
+![photo2](https://raw.githubusercontent.com/abetaresh/ML-Project/main/data/testing/27-27708.jpg)
