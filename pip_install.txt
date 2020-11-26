@@ -3,3 +3,4 @@ caer
 pandas
 scikit-learn
 tensorflow-nightly
+tensorflow-transform
