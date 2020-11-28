@@ -7,10 +7,14 @@ import tensorflow as tf
 import pathlib
 import pandas as pd
 import matplotlib.pyplot as plt
-from conf import *
+import yaml
 
-# %%
+# %% Initialization
 print(tf.__version__)
+
+# Loading global settings
+with open("config.yml", "r") as config:
+    SETTINGS = yaml.load(config)
 
 data_dir = pathlib.Path("../data")
 image_count = len(list(data_dir.glob("*/*.jpg")))
@@ -26,7 +30,7 @@ def parse_image(filename):
     # Specifies the underlying data type
     image = tf.image.convert_image_dtype(image, tf.float32)
     # Unifies image input
-    image = tf.image.resize(image, PARAMS["resize_dim"])
+    image = tf.image.resize(image, SETTINGS["resize_dim"])
     return image
 
 def read_labels(filepath):
@@ -62,4 +66,4 @@ for ax, (im, labels) in zip (grid, iter(train_ds.take(9))):
     ax.imshow(im)
     plt.axis("off")
 
-#plt.show()
+plt.show()
