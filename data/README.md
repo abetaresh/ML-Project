@@ -10,8 +10,11 @@ with many animals and also a fellow human. The labels are therefore not a one-ho
 encoding of unary classes but rather a binary representation of whether or not
 the n^th object appears on a given picture.
 
-### Consideration 2: Sparcity of the data set
+### Consideration 2: Sparcity of the data set (cardinality)
 
+### Dimension of data and label
+* Label: 17 classes
+* Image: 480, 320
 
 ### Example 1:
 
