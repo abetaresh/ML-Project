@@ -14,10 +14,9 @@ print(tf.__version__)
 
 # Loading global settings
 with open("config.yml", "r") as config:
-    SETTINGS = yaml.load(config)
+    SETTINGS = yaml.safe_load(config) # EXPLOIT!
 
-data_dir = pathlib.Path("../data")
-image_count = len(list(data_dir.glob("*/*.jpg")))
+image_count = len(list(pathlib.Path("../data/").glob("**/*.jpg")))
 print(image_count)
 
 # %% Labeling
@@ -29,7 +28,7 @@ def parse_image(filename):
     image = tf.image.decode_jpeg(image)
     # Specifies the underlying data type
     image = tf.image.convert_image_dtype(image, tf.float32)
-    # Unifies image input
+    # Standardizes image input
     image = tf.image.resize(image, SETTINGS["resize_dim"])
     return image
 
@@ -50,8 +49,8 @@ def build_ds(data_path, label_path):
     ds = tf.data.Dataset.zip((img_ds, labels_ds))
     return ds
 
-train_ds = build_ds("../data/training/*.jpg", data_dir/"testing/testing_labels.csv")
-test_ds = build_ds("../data/training/*.jpg", data_dir/"training/training_labels.csv")
+train_ds = build_ds("../data/training/*.jpg", "../data/testing/testing_labels.csv")
+test_ds = build_ds("../data/training/*.jpg", "../data/training/training_labels.csv")
 
 # %% Checkpoint
 

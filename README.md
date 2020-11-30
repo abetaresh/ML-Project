@@ -1,3 +1,3 @@
 # ML-Project
 
-`pip install -r pip_install.txt`
+`pip install -r requirements.txt`

@@ -2,5 +2,5 @@ opencv-contrib-python
 caer
 pandas
 scikit-learn
-tensorflow-nightly
+tf-nightly
 tensorflow-transform
