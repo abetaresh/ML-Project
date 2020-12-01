@@ -35,12 +35,12 @@ def parse_image(filename):
 def read_labels(filepath):
     # Read meta data
     labels = pd.read_csv(filepath, sep=" ", header="infer")
-    # Remove first "name" column eg. 23-00-11.jpg
+    # Remove filename eg. 23-00-11.jpg
     labels = labels.iloc[:, 1:].to_numpy()
     return labels
 
 def build_ds(data_path, label_path):
-    list_ds = tf.data.Dataset.list_files(data_path)
+    list_ds = tf.data.Dataset.list_files(data_path, shuffle=False)
     img_ds = list_ds.map(parse_image)
 
     labels_np = read_labels(label_path)
@@ -49,8 +49,8 @@ def build_ds(data_path, label_path):
     ds = tf.data.Dataset.zip((img_ds, labels_ds))
     return ds
 
-train_ds = build_ds("../data/training/*.jpg", "../data/testing/testing_labels.csv")
-test_ds = build_ds("../data/training/*.jpg", "../data/training/training_labels.csv")
+train_ds = build_ds("../data/training/*.jpg", "../data/training/training_labels.csv")
+test_ds = build_ds("../data/testing/*.jpg", "../data/testing/testing_labels.csv")
 
 # %% Checkpoint
 
