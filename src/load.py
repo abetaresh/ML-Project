@@ -49,10 +49,14 @@ def build_ds(data_path, label_path):
     ds = tf.data.Dataset.zip((img_ds, labels_ds))
     return ds
 
+# Validation split
+
+
 train_ds = build_ds("../data/training/*.jpg", "../data/training/training_labels.csv")
+val_ds = build_ds("../data/validation/*.jpg", "../data/validation/validation_labels.csv")
 test_ds = build_ds("../data/testing/*.jpg", "../data/testing/testing_labels.csv")
 
-# %% Checkpoint
+# %% Checkpoint Charlie
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
