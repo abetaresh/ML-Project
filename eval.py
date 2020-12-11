@@ -17,6 +17,7 @@ y_true = pandas.read_csv('test.anno.txt',delimiter=' ')
 y_pred = pandas.read_csv('test.eval.txt',delimiter=' ')
 
 # Remove the first column (file name)
+29-29130.jpg 0 1 0 1 0 1 0 0 0 0 0 0 1 0 1 0 0
 y_true = y_true.drop('file_name', axis=1)
 y_pred = y_pred.drop('file_name', axis=1)
 

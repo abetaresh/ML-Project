@@ -1,3 +1,8 @@
 # ML-Project
 
-`pip install -r requirements.txt`
+```
+conda env create --name ml --file requirements.yml
+conda activate ml
+conda install pip
+pip install -r requirements.txt
+```
