@@ -1,18 +1,13 @@
-# %%
 import numpy as np
 import os
 import PIL
 import PIL.Image
-import tensorflow as tf
 import pathlib
 import pandas as pd
 import matplotlib.pyplot as plt
 import yaml
 
-# %% Initialization
-print(tf.__version__)
-
-# Loading global settings
+# %% Loading global settings
 with open("config.yml", "r") as config:
     SETTINGS = yaml.safe_load(config)
 
@@ -21,51 +16,40 @@ print(image_count)
 
 # %% Labeling
 
-def parse_image(filename):
-    # Reads the file into a string of bytes
-    image = tf.io.read_file(filename)
-    # Decodes the string into a Tensor
-    image = tf.image.decode_jpeg(image)
-    # Specifies the underlying data type
-    image = tf.image.convert_image_dtype(image, tf.float32)
-    # Standardizes image input
-    image = tf.image.resize(image, SETTINGS["resize_dim"])
-    return image
+y_train = pd.read_csv("../data/train/train.csv", delimiter=" ", index_col="file_name")
+y_test = pd.read_csv("../data/test/test.csv", delimiter=" ", index_col="file_name")
+ys = pd.concat([y_train, y_test], ignore_index=False)
+ys.head(1)
+# %%
+import matplotlib.image as mpimg
 
-def read_labels(filepath):
-    # Read meta data
-    labels = pd.read_csv(filepath, sep=" ", header="infer")
-    # Remove filename eg. 23-00-11.jpg
-    labels = labels.iloc[:, 1:].to_numpy()
-    return labels
+def show_sample(df, labels):
+    df_queried = query(df, labels)
+    sample = df_queried.sample()
+    filename = sample.index[0]
+    img = mpimg.imread("../data/all/" + filename)
+    plt.imshow(img)
+    return sample
 
-def build_ds(data_path, label_path):
-    list_ds = tf.data.Dataset.list_files(data_path, shuffle=False)
-    img_ds = list_ds.map(parse_image)
+def query(df, labels):
+    query = [l + " == 1" for l in labels]
+    query = " & ".join(query)
+    df_queried = df.query(query)
+    return df_queried
 
-    labels_np = read_labels(label_path)
-    labels_ds = tf.data.Dataset.from_tensor_slices(labels_np)
+indoors = y_train[y_train["indoor"] == 1]
+indoors.sum(axis=0)
 
-    ds = tf.data.Dataset.zip((img_ds, labels_ds))
-    return ds
-
-# Validation split
+show_sample(ys, ["day", "mountains", "beach"])
 
 
-train_ds = build_ds("../data/training/*.jpg", "../data/training/training_labels.csv")
-test_ds = build_ds("../data/testing/*.jpg", "../data/testing/testing_labels.csv")
+#%%
+label_weight = y_train[y_train == 1].sum()
+plt.figure(figsize=(12, 5))
+ax = label_weight.hist()
+ax.set_xticklabels(label_weight.index)
+ax.set(xlabel="class", ylabel="frequency")
+plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha="right")
+plt.plot()
 
-# %% Checkpoint Charlie
-
-import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import ImageGrid
-
-fig = plt.figure(figsize=(12,9))
-plt.axis("off")
-
-grid = ImageGrid(fig, 111, nrows_ncols=(3,3), axes_pad=0.1)
-for ax, (im, labels) in zip (grid, iter(train_ds.take(9))):
-    ax.imshow(im)
-    plt.axis("off")
-
-plt.show()
+# %%
