@@ -1,0 +1,71 @@
+# %%
+import numpy as np
+import os
+import PIL
+import PIL.Image
+import tensorflow as tf
+import pathlib
+import pandas as pd
+import matplotlib.pyplot as plt
+import yaml
+
+# %% Initialization
+print(tf.__version__)
+
+# Loading global settings
+with open("config.yml", "r") as config:
+    SETTINGS = yaml.safe_load(config)
+
+image_count = len(list(pathlib.Path("../data/").glob("**/*.jpg")))
+print(image_count)
+
+# %% Labeling
+
+def parse_image(filename):
+    # Reads the file into a string of bytes
+    image = tf.io.read_file(filename)
+    # Decodes the string into a Tensor
+    image = tf.image.decode_jpeg(image)
+    # Specifies the underlying data type
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    # Standardizes image input
+    image = tf.image.resize(image, SETTINGS["resize_dim"])
+    return image
+
+def read_labels(filepath):
+    # Read meta data
+    labels = pd.read_csv(filepath, sep=" ", header="infer")
+    # Remove filename eg. 23-00-11.jpg
+    labels = labels.iloc[:, 1:].to_numpy()
+    return labels
+
+def build_ds(data_path, label_path):
+    list_ds = tf.data.Dataset.list_files(data_path, shuffle=False)
+    img_ds = list_ds.map(parse_image)
+
+    labels_np = read_labels(label_path)
+    labels_ds = tf.data.Dataset.from_tensor_slices(labels_np)
+
+    ds = tf.data.Dataset.zip((img_ds, labels_ds))
+    return ds
+
+# Validation split
+
+
+train_ds = build_ds("../data/training/*.jpg", "../data/training/training_labels.csv")
+test_ds = build_ds("../data/testing/*.jpg", "../data/testing/testing_labels.csv")
+
+# %% Checkpoint Charlie
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
+
+fig = plt.figure(figsize=(12,9))
+plt.axis("off")
+
+grid = ImageGrid(fig, 111, nrows_ncols=(3,3), axes_pad=0.1)
+for ax, (im, labels) in zip (grid, iter(train_ds.take(9))):
+    ax.imshow(im)
+    plt.axis("off")
+
+plt.show()
