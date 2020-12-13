@@ -7,6 +7,8 @@ from start import y_train, y_test
 import plotly.express as px
 from sklearn.linear_model import LogisticRegression
 import skimage.feature
+from skimage.feature.corner import corner_harris, corner_subpix
+from skimage.color import rgb2gray
 import skimage
 from sklearn.decomposition import PCA
 
@@ -44,6 +46,28 @@ a, b, = skimage.feature.hog(im, orientations=9, visualize=True)
 a.shape, b.shape
 im.shape
 skimage.feature.hog(im2).shape
+
+# %% corner detection with subpix 
+
+def corner_detection(filepath):
+	img = skimage.io.imread(filepath, as_gray = True)
+	
+	# Creates the edgse
+	corners =  peak_local_max(corner_harris(img), min_distance=10, threshold_rel=0, num_peaks=1)
+	#print(corners)
+    
+	subpix_edges = skimage.feature.corner_subpix(img, corners)
+
+	# Discards nan values
+	nb_of_edges = np.count_nonzero(~np.isnan(subpix_edges))
+	return nb_of_edges
+
+
+# Maps images to their number of corners
+y_train.feature_corners = list(map(corner_detection, y_train.index))
+where y_train.index is ["../data/train/sample.jpg", ...]
+
+
 
 # %% SVM
 image = map(imread, y_train.index)
