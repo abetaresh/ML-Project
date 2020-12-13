@@ -5,6 +5,10 @@ from sklearn.preprocessing import StandardScaler
 from skimage.io import imread, imshow
 from start import y_train, y_test
 import plotly.express as px
+from sklearn.linear_model import LogisticRegression
+import skimage.feature
+import skimage
+from sklearn.decomposition import PCA
 
 # %%
 # Idea 1: Train separate models on the groups
@@ -16,7 +20,6 @@ label_group = [
 
 
 # %%
-from sklearn.linear_model import LogisticRegression
 def luminosity(df):
     df["f_lum"] = list(map(lambda x: np.mean(imread(x)), df.index))
     return df
@@ -34,17 +37,21 @@ reg_day.score(X, y_train.day)
 reg_night.score(X, y_train.night)
 
 # %% HOG: Histogram of Oriented Gradients
-import skimage.feature
-import skimage
 
-im = imread("../data/train/" + y_train.index[0])
-im2 = imread("../data/train/" + y_train.index[9])
+im = imread(y_train.index[0])
+im2 = imread(y_train.index[9])
 a, b, = skimage.feature.hog(im, orientations=9, visualize=True)
 a.shape, b.shape
 im.shape
 skimage.feature.hog(im2).shape
 
 # %% SVM
-from sklearn.decomposition import PCA
 image = map(imread, y_train.index)
 next(image)
+
+# %%
+import skimage.io
+i = imread(y_train.index[0])
+
+skimage.io.imsave("../res/random_image.png", i)
+imshow(i)
