@@ -7,10 +7,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import yaml
 
-# %% Loading global settings
-with open("config.yml", "r") as config:
-    SETTINGS = yaml.safe_load(config)
-
 image_count = len(list(pathlib.Path("../data/").glob("**/*.jpg")))
 print(image_count)
 
