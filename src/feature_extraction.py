@@ -1,5 +1,4 @@
 from start import y_train, y_test
-import tensorflow as tf
 import numpy as np
 import skimage
 from skimage.io import imread, imshow
@@ -8,6 +7,9 @@ import skimage.feature
 from skimage.feature.corner import corner_harris, corner_subpix
 from skimage.feature import peak_local_max
 from skimage.color import rgb2gray
+import plotly.express as px
+import skimage
+
 # %%
 # Idea 1: Train separate models on the groups
 label_group = [
@@ -144,5 +146,3 @@ pd.concat([y_train, hogs], axis=1)
 # %%
 # px.scatter_3d(y_train, x="day", y="night", z="f_lum")
 # px.scatter(y_train, x="f_min", y="day")
-
-#%%
