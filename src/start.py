@@ -18,8 +18,10 @@ print(image_count)
 
 y_train = pd.read_csv("../data/train/train.csv", delimiter=" ", index_col="file_name")
 y_test = pd.read_csv("../data/test/test.csv", delimiter=" ", index_col="file_name")
+y_train.index = "../data/train/" + y_train.index
+y_test.index = "../data/test/" + y_test.index
 ys = pd.concat([y_train, y_test], ignore_index=False)
-ys.head(1)
+
 # %%
 import matplotlib.image as mpimg
 
@@ -27,7 +29,7 @@ def show_sample(df, labels):
     df_queried = query(df, labels)
     sample = df_queried.sample()
     filename = sample.index[0]
-    img = mpimg.imread("../data/all/" + filename)
+    img = mpimg.imread(filename)
     plt.imshow(img)
     return sample
 
@@ -50,6 +52,6 @@ ax = label_weight.hist()
 ax.set_xticklabels(label_weight.index)
 ax.set(xlabel="class", ylabel="frequency")
 plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha="right")
-plt.plot()
+plt.savefig("../save/class_histogram.png")
 
 # %%
